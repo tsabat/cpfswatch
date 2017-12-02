@@ -3,7 +3,7 @@ var fs = require('fs-extra');
 var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../, 'index.js'];
 
 // the path we'll be syncing to
-var prepend = 'tmp'
+var prepend = 'tmp';
 
 var watcher = chokidar.watch('.', {
   ignored: ignored,
@@ -20,14 +20,14 @@ function copyFile(source, target, cb) {
   var cbCalled = false;
 
   var rd = fs.createReadStream(source);
-  rd.on("error", function (err) {
+  rd.on('error', function(err) {
     done(err);
   });
   var wr = fs.createWriteStream(target);
-  wr.on("error", function (err) {
+  wr.on('error', function(err) {
     done(err);
   });
-  wr.on("close", function (ex) {
+  wr.on('close', function(ex) {
     done();
   });
   rd.pipe(wr);
@@ -43,45 +43,57 @@ function copyFile(source, target, cb) {
 // Something to use when events are received.
 var log = console.log.bind(console);
 
-var rm = function (path) {
+var rm = function(path) {
   var newPath = createNewPath(path);
   console.log('file delete started: ' + path);
 
-  fs.unlink(newPath)
+  fs
+    .unlink(newPath)
     .then(() => {
-      console.log('file deleted: ' + newPath)
+      console.log('file deleted: ' + newPath);
     })
     .catch(err => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};
 
-var cp = function (path) {
+var cp = function(path) {
   console.log('copy file started: ' + path);
   var newPath = createNewPath(path);
-  copyFile(path, newPath, function (err) {
+  copyFile(path, newPath, function(err) {
     if (err) {
-      return console.log('error!' + err)
+      return console.log('error!' + err);
     }
-    console.log('copy file finished: ' + newPath)
+    console.log('copy file finished: ' + newPath);
   });
 };
 
-var mkdir = function (path) {
+var mkdir = function(path) {
   console.log('make dir started: ' + path);
   var newPath = createNewPath(path);
 
-  fs.ensureDir(newPath)
+  fs
+    .ensureDir(newPath)
     .then(() => {
-      console.log('dir created: ' + newPath)
+      console.log('dir created: ' + newPath);
     })
     .catch(err => {
-      console.error(err)
-    })
+      console.error(err);
+    });
 };
 
-var rmdir = function (path) {
-  console.log('remove dir ' + path);
+var rmdir = function(path) {
+  console.log('rmdir started: ' + path);
+  var newPath = createNewPath(path);
+
+  fs
+    .rmdir(newPath)
+    .then(() => {
+      console.log('dir removed: ' + newPath);
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 // Add event listeners.
