@@ -1,6 +1,8 @@
 var chokidar = require('chokidar');
 var fs = require('fs-extra');
 var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../, 'index.js'];
+
+// the path we'll be syncing to
 var prepend = 'tmp'
 
 var watcher = chokidar.watch('.', {
@@ -41,11 +43,20 @@ function copyFile(source, target, cb) {
 // Something to use when events are received.
 var log = console.log.bind(console);
 
-var rm = function rmMe(path) {
-  console.log('remove file ' + path);
-};
+var rm = function (path) {
+  var newPath = createNewPath(path);
+  console.log('file delete started: ' + path);
 
-var cp = function cpMe(path) {
+  fs.unlink(newPath)
+    .then(() => {
+      console.log('file deleted: ' + newPath)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+var cp = function (path) {
   console.log('copy file started: ' + path);
   var newPath = createNewPath(path);
   copyFile(path, newPath, function (err) {
@@ -56,10 +67,10 @@ var cp = function cpMe(path) {
   });
 };
 
-var mkdir = function mkdirMe(path) {
+var mkdir = function (path) {
   console.log('make dir started: ' + path);
   var newPath = createNewPath(path);
-  
+
   fs.ensureDir(newPath)
     .then(() => {
       console.log('dir created: ' + newPath)
@@ -69,7 +80,7 @@ var mkdir = function mkdirMe(path) {
     })
 };
 
-var rmdir = function rmdirMe(path) {
+var rmdir = function (path) {
   console.log('remove dir ' + path);
 };
 
