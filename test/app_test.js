@@ -9,22 +9,25 @@ describe('This shit works!', () => {
     fs.emptyDirSync('source');
     fs.emptyDirSync('dest');
 
-    app.start('test/source', 'test/dest');
+    app.start('./source', './dest');
   });
 
   afterEach(() => {
-    fs.removeSync('source');
-    fs.removeSync('dest');
+    // fs.removeSync('source');
+    // fs.removeSync('dest');
 
     app.stop();
   });
 
-  it('is cool', done => {
+  it('is cool', function(done) {
+    // mocha likes us to timeout
+    this.timeout(10000);
+
     fs.writeFileSync('source/burrito.txt', 'burrito');
     setTimeout(() => {
       expect(fs.readFileSync('dest/burrito.txt')).to.equal('burrito');
       console.log('waiting over.');
       done();
-    }, 1500);
+    }, 3000);
   });
 });

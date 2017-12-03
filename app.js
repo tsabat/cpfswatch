@@ -1,6 +1,7 @@
 // LIKE TO PASS SHIT IN FROM CMD LINE
 var FileHelper = require('./file_helper');
 var chokidar = require('chokidar');
+resolve = require('path').resolve;
 
 class App {
   stop() {
@@ -10,9 +11,10 @@ class App {
   start(source, dest) {
     var fileHelper = new FileHelper(source, dest);
 
-    console.log(source, dest);
+    console.log(resolve(source));
+    console.log(resolve(dest));
 
-    var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../, './*.js'];
+    var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../];
     this.watcher = chokidar.watch(source, {
       ignored: ignored,
       ignoreInitial: true,
@@ -31,7 +33,7 @@ class App {
       .on('unlinkDir', path => fileHelper.rmdir(path))
       .on('error', error => console.log(`Watcher error: ${error}`))
       .on('ready', () =>
-        console.log('Initial scan complete. Ready for changes')
+        console.log('Initial scan complete. Ready for changes.')
       );
 
     // 'add', 'addDir' and 'change' events also receive stat() results as second
