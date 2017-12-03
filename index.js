@@ -5,12 +5,6 @@ var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../, 'index.js'];
 // the path we'll be syncing to
 var prepend = 'tmp';
 
-var watcher = chokidar.watch('.', {
-  ignored: ignored,
-  ignoreInitial: true,
-  persistent: true
-});
-
 function createNewPath(path) {
   return prepend + '/' + path;
 }
@@ -40,7 +34,6 @@ function copyFile(source, target, cb) {
   }
 }
 
-// Something to use when events are received.
 var log = console.log.bind(console);
 
 var rm = function(path) {
@@ -95,6 +88,12 @@ var rmdir = function(path) {
       console.log(err);
     });
 };
+
+var watcher = chokidar.watch('.', {
+  ignored: ignored,
+  ignoreInitial: true,
+  persistent: true
+});
 
 // Add event listeners.
 watcher
