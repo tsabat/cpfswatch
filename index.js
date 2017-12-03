@@ -1,10 +1,15 @@
 // LIKE TO PASS SHIT IN FROM CMD LINE
 var FileHelper = require('./file_helper');
 var chokidar = require('chokidar');
-var fileHelper = new FileHelper('.', 'tmp');
 
-var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../, 'index.js'];
-var watcher = chokidar.watch('.', {
+// TODO: take this from command line
+var source = 'source';
+var dest = 'dest';
+
+var fileHelper = new FileHelper(source, dest);
+
+var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../, './*.js'];
+var watcher = chokidar.watch(source, {
   ignored: ignored,
   ignoreInitial: true,
   persistent: true
