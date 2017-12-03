@@ -2,37 +2,47 @@
 var FileHelper = require('./file_helper');
 var chokidar = require('chokidar');
 
-// TODO: take this from command line
-var source = 'source';
-var dest = 'dest';
+class App {
+  stop() {
+    this.watcher.close();
+  }
 
-var fileHelper = new FileHelper(source, dest);
+  start(source, dest) {
+    var fileHelper = new FileHelper(source, dest);
 
-var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../, './*.js'];
-var watcher = chokidar.watch(source, {
-  ignored: ignored,
-  ignoreInitial: true,
-  persistent: true
-});
+    console.log(source, dest);
 
-// Add event listeners.
-watcher
-  .on('add', path => fileHelper.cp(path))
-  .on('change', path => fileHelper.cp(path))
-  .on('unlink', path => fileHelper.rm(path));
+    var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../, './*.js'];
+    this.watcher = chokidar.watch(source, {
+      ignored: ignored,
+      ignoreInitial: true,
+      persistent: true
+    });
 
-// More possible events.
-watcher
-  .on('addDir', path => fileHelper.mkdir(path))
-  .on('unlinkDir', path => fileHelper.rmdir(path))
-  .on('error', error => console.log(`Watcher error: ${error}`))
-  .on('ready', () => console.log('Initial scan complete. Ready for changes'));
+    // Add event listeners.
+    this.watcher
+      .on('add', path => fileHelper.cp(path))
+      .on('change', path => fileHelper.cp(path))
+      .on('unlink', path => fileHelper.rm(path));
 
-// 'add', 'addDir' and 'change' events also receive stat() results as second
-// argument when available: http://nodejs.org/api/fs.html#fs_class_fs_stats
-watcher.on('change', (path, stats) => {
-  if (stats) console.log(`File ${path} changed size to ${stats.size}`);
-});
+    // More possible events.
+    this.watcher
+      .on('addDir', path => fileHelper.mkdir(path))
+      .on('unlinkDir', path => fileHelper.rmdir(path))
+      .on('error', error => console.log(`Watcher error: ${error}`))
+      .on('ready', () =>
+        console.log('Initial scan complete. Ready for changes')
+      );
 
-var watchedPaths = watcher.getWatched();
-console.log(watchedPaths);
+    // 'add', 'addDir' and 'change' events also receive stat() results as second
+    // argument when available: http://nodejs.org/api/fs.html#fs_class_fs_stats
+    this.watcher.on('change', (path, stats) => {
+      if (stats) console.log(`File ${path} changed size to ${stats.size}`);
+    });
+
+    var watchedPaths = this.watcher.getWatched();
+    console.log(watchedPaths);
+  }
+}
+
+module.exports = App;
