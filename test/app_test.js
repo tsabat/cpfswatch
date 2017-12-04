@@ -1,8 +1,8 @@
-var chai = require('chai');
-var expect = chai.expect;
-var App = require('../app');
-var app = new App();
-var fs = require('fs-extra');
+const chai = require('chai');
+const expect = chai.expect;
+const App = require('../app');
+const app = new App();
+const fs = require('fs-extra');
 
 describe('This shit works!', () => {
   beforeEach(() => {

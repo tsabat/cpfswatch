@@ -1,7 +1,7 @@
 // LIKE TO PASS SHIT IN FROM CMD LINE
-var FileHelper = require('./file_helper');
-var chokidar = require('chokidar');
-resolve = require('path').resolve;
+const FileHelper = require('./file_helper');
+const chokidar = require('chokidar');
+const resolve = require('path').resolve;
 
 class App {
   stop() {
@@ -9,12 +9,12 @@ class App {
   }
 
   start(source, dest) {
-    var fileHelper = new FileHelper(source, dest);
+    const fileHelper = new FileHelper(source, dest);
 
     console.log(resolve(source));
     console.log(resolve(dest));
 
-    var ignored = ['node_modules', 'tmp', /(^|[\/\\])\../];
+    const ignored = ['node_modules', 'tmp', /(^|[\/\\])\../];
     this.watcher = chokidar.watch(source, {
       ignored: ignored,
       ignoreInitial: true,
@@ -42,7 +42,7 @@ class App {
       if (stats) console.log(`File ${path} changed size to ${stats.size}`);
     });
 
-    var watchedPaths = this.watcher.getWatched();
+    const watchedPaths = this.watcher.getWatched();
     console.log(watchedPaths);
   }
 }

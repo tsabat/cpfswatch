@@ -1,4 +1,4 @@
-var fs = require('fs-extra');
+const fs = require('fs-extra');
 
 class FileHelper {
   constructor(source, dest) {
@@ -8,13 +8,13 @@ class FileHelper {
 
   // https://stackoverflow.com/a/14387791/182484
   copyFile(source, target, cb) {
-    var cbCalled = false;
+    let cbCalled = false;
 
-    var rd = fs.createReadStream(source);
+    const rd = fs.createReadStream(source);
     rd.on('error', function(err) {
       done(err);
     });
-    var wr = fs.createWriteStream(target);
+    const wr = fs.createWriteStream(target);
     wr.on('error', function(err) {
       done(err);
     });
@@ -32,7 +32,7 @@ class FileHelper {
   }
 
   rm(path) {
-    var newPath = this._prepended(path);
+    const newPath = this._prepended(path);
     console.log('file delete started: ' + path);
 
     fs
@@ -47,7 +47,7 @@ class FileHelper {
 
   cp(path) {
     console.log('copy file started: ' + path);
-    var newPath = this._prepended(path);
+    const newPath = this._prepended(path);
     this.copyFile(path, newPath, function(err) {
       if (err) {
         return console.log('error!' + err);
@@ -58,7 +58,7 @@ class FileHelper {
 
   mkdir(path) {
     console.log('make dir started: ' + path);
-    var newPath = this._prepended(path);
+    const newPath = this._prepended(path);
 
     fs
       .ensureDir(newPath)
@@ -72,7 +72,7 @@ class FileHelper {
 
   rmdir(path) {
     console.log('rmdir started: ' + path);
-    var newPath = this._prepended(path);
+    const newPath = this._prepended(path);
 
     fs
       .rmdir(newPath)

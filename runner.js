@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-var App = require('./app');
-var app = new App();
+const App = require('./app');
+const app = new App();
 app.start('.', '/tmp');
