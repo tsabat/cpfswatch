@@ -11,16 +11,11 @@ class FileHelper {
     let cbCalled = false;
 
     const rd = fs.createReadStream(source);
-    rd.on('error', function(err) {
-      done(err);
-    });
+    rd.on('error', err => done(err));
+
     const wr = fs.createWriteStream(target);
-    wr.on('error', function(err) {
-      done(err);
-    });
-    wr.on('close', function(ex) {
-      done();
-    });
+    wr.on('error', err => done(err));
+    wr.on('close', () => done());
     rd.pipe(wr);
 
     function done(err) {
@@ -32,60 +27,56 @@ class FileHelper {
   }
 
   rm(path) {
-    const newPath = this._prepended(path);
-    console.log('file delete started: ' + path);
+    console.log(`file delete started: ${path}`);
+    const pathNoSource = this._removeSource(path);
+    const newPath = this._prepended(pathNoSource);
 
     fs
       .unlink(newPath)
-      .then(() => {
-        console.log('file deleted: ' + newPath);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      .then(() => console.log(`file deleted: ${newPath}`))
+      .catch(err => console.log(err));
   }
 
   cp(path) {
-    console.log('copy file started: ' + path);
-    const newPath = this._prepended(path);
-    this.copyFile(path, newPath, function(err) {
+    const pathNoSource = this._removeSource(path);
+    const newPath = this._prepended(pathNoSource);
+
+    this.copyFile(path, newPath, (err) => {
       if (err) {
-        return console.log('error!' + err);
+        return console.error(`error: ${err}`);
       }
-      console.log('copy file finished: ' + newPath);
+      console.log(`copy file finished: ${newPath}`);
     });
   }
 
   mkdir(path) {
-    console.log('make dir started: ' + path);
-    const newPath = this._prepended(path);
+    console.log(`make dir started: ${path}`);
+    const pathNoSource = this._removeSource(path);
+    const newPath = this._prepended(pathNoSource);
 
     fs
       .ensureDir(newPath)
-      .then(() => {
-        console.log('dir created: ' + newPath);
-      })
-      .catch(err => {
-        console.error(err);
-      });
+      .then(() => console.log(`dir created: ${newPath}`))
+      .catch(err => console.error(err));
   }
 
   rmdir(path) {
-    console.log('rmdir started: ' + path);
-    const newPath = this._prepended(path);
+    console.log(`rmdir started: ${path}`);
+    const pathNoSource = this._removeSource(path);
+    const newPath = this._prepended(pathNoSource);
 
     fs
-      .rmdir(newPath)
-      .then(() => {
-        console.log('dir removed: ' + newPath);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      .remove(newPath)
+      .then(() => console.log(`dir removed: ${newPath}`))
+      .catch(err => console.log(err));
+  }
+
+  _removeSource(path) {
+    return path.replace(`${this.source}/`, '');
   }
 
   _prepended(path) {
-    return this.dest + '/' + path;
+    return `${this.dest}/${path}`;
   }
 }
 
