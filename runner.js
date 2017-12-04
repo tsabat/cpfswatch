@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
-var App = require('./app');
-var app = new App();
-app.start('.', '/tmp');
+const App = require('./app');
+const app = new App();
+app.start('.', '/tmp', (err) => {
+  if (err) console.log(`Error starting App: ${err}`);
+});
